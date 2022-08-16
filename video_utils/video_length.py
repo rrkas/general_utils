@@ -13,7 +13,7 @@ def get_video_length(filepath):
                 "format=duration",
                 "-of",
                 "default=noprint_wrappers=1:nokey=1",
-                f'{filepath}',
+                f"{filepath}",
             ],
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
@@ -21,6 +21,7 @@ def get_video_length(filepath):
         return float(res.stdout)
     except:
         return None
+
 
 if __name__ == "__main__":
     path = sys.argv[1]
