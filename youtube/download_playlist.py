@@ -9,20 +9,23 @@ from tqdm import tqdm
 def download_playlist(url, filter_format="mp4", output_dir="outputs", thread_limit=4):
     try:
         pl = pytube.Playlist(url)
-        dir_path = os.path.join(output_dir, pl.title)
+        dir_path = os.path.join(output_dir, sanitize(pl.title))
         print(dir_path)
         os.makedirs(dir_path, exist_ok=True)
         pad = len(str(pl.length))
 
         def _download(idx, video):
-            t = video.streams.filter(file_extension=filter_format)
-            t = t.order_by("resolution").desc().first()
-            t.download(
-                output_path=dir_path,
-                filename=sanitize(
-                    f"{str(idx+1).zfill(pad)}_{video.title}.{filter_format}"
-                ),
-            )
+            try:
+                t = video.streams.filter(file_extension=filter_format)
+                t = t.order_by("resolution").desc().first()
+                t.download(
+                    output_path=dir_path,
+                    filename=sanitize(
+                        f"{str(idx+1).zfill(pad)}_{video.title}.{filter_format}"
+                    ),
+                )
+            except BaseException as e:
+                print(idx, e.args)
 
         threads = []
         for idx, video in enumerate(tqdm(pl.videos)):
@@ -39,6 +42,8 @@ def download_playlist(url, filter_format="mp4", output_dir="outputs", thread_lim
 
         while any([t.is_alive() for t in threads]):
             pass
+
+        return dir_path
 
     except BaseException as e:
         print(e)

@@ -1,6 +1,6 @@
 import os
 import sys
-from video_length import get_video_length
+from .video_length import get_video_length
 
 # float: seconds
 def get_video_dir_length(dir_path):
@@ -22,11 +22,11 @@ def get_video_dir_length(dir_path):
 
     if total_length >= 60:
         total_min = total_length / 60
-        metadata.write(f" = {total_min} minutes")
+        metadata.write(f" = {total_min:.2f} minutes")
 
     if total_length >= 3600:
         total_hr = total_length / 3600
-        metadata.write(f" = {total_hr} hours")
+        metadata.write(f" = {total_hr:.2f} hours")
 
     metadata.close()
     return total_length
